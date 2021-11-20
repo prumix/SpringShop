@@ -9,18 +9,18 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-public class ProductRepository {
+public class ProductRepositoryMEM {
     private List<Product> products;
 
     @PostConstruct
     public void init(){
-        products = new ArrayList<>(List.of(
+        products = new ArrayList<>(/*List.of(
                 new Product(1L, "Apples", 50),
                 new Product(2L,"Oranges", 20),
                 new Product(3L,"Bananas", 15),
                 new Product(4L,"Potatil", 45),
                 new Product(5L,"Marshmallow", 90)
-        ));
+        )*/);
     }
 
     public List<Product> getAllProducts(){

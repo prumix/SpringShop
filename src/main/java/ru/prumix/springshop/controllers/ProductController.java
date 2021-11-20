@@ -8,6 +8,7 @@ import ru.prumix.springshop.model.Product;
 import ru.prumix.springshop.services.ProductService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ProductController {
@@ -19,7 +20,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<Product> getProducts(){
-        return productService.getAll();
+        return productService.findAll();
     }
 
     @GetMapping("/products/delete/{id}")

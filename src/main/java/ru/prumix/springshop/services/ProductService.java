@@ -1,29 +1,42 @@
 package ru.prumix.springshop.services;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.prumix.springshop.dao.ProductDao;
+import ru.prumix.springshop.dao.ProductDaoImpl;
 import ru.prumix.springshop.model.Product;
-import ru.prumix.springshop.repositories.ProductRepository;
+import ru.prumix.springshop.utils.SessionFactoryUtils;
 
 import java.util.List;
 
 @Service
 public class ProductService {
-    private ProductRepository productRepository;
+    private ProductDao productDao;
+    private SessionFactoryUtils sessionFactoryUtils;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+
+    public ProductService() {
+        this.sessionFactoryUtils = new SessionFactoryUtils();
+        sessionFactoryUtils.init();
+        this.productDao = new ProductDaoImpl(sessionFactoryUtils);
     }
 
-    public List<Product> getAll(){
-        return productRepository.getAllProducts();
+    public List<Product> findAll() {
+        return productDao.findAll();
     }
 
-    public void deleteById(Long id){
-        productRepository.deleteById(id);
+    public Product findById(Long id) {
+        return productDao.findById(id);
+    }
+
+    public void deleteById(Long id) {
+        productDao.deleteById(id);
     }
 
     public void changeCost(Long id, Integer delta) {
-        Product product = productRepository.findById(id);
+        Product product = productDao.findById(id);
         product.setCost(product.getCost() + delta);
+        productDao.saveOrUpdate(product);
     }
 }
