@@ -1,42 +1,50 @@
 package ru.prumix.springshop.services;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.prumix.springshop.dao.ProductDao;
-import ru.prumix.springshop.dao.ProductDaoImpl;
-import ru.prumix.springshop.model.Product;
-import ru.prumix.springshop.utils.SessionFactoryUtils;
+import ru.prumix.springshop.entities.Product;
+import ru.prumix.springshop.exceptions.ResourceNotFoundException;
+import ru.prumix.springshop.repositories.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
-    private ProductDao productDao;
-    private SessionFactoryUtils sessionFactoryUtils;
+   private ProductRepository repository;
 
-
-    public ProductService() {
-        this.sessionFactoryUtils = new SessionFactoryUtils();
-        sessionFactoryUtils.init();
-        this.productDao = new ProductDaoImpl(sessionFactoryUtils);
+    public ProductService(ProductRepository repository) {
+        this.repository = repository;
     }
 
     public List<Product> findAll() {
-        return productDao.findAll();
+        return repository.findAll();
     }
 
-    public Product findById(Long id) {
-        return productDao.findById(id);
+    public Optional<Product> findById(Long id) {
+        return repository.findById(id);
     }
 
     public void deleteById(Long id) {
-        productDao.deleteById(id);
+        repository.deleteById(id);
     }
 
     public void changeCost(Long id, Integer delta) {
-        Product product = productDao.findById(id);
+       Product product = repository.findById(id)
+               .orElseThrow(() ->  new ResourceNotFoundException("Max or Min cost: " + delta));
         product.setCost(product.getCost() + delta);
-        productDao.saveOrUpdate(product);
+        repository.save(product);
+    }
+
+    public List<Product> findAllByCostBetween(Integer min, Integer max) {
+        return repository.findProductsByCostBetween(min, max);
+    }
+
+    public List<Product> findProductsByCostAfter(Integer min) {
+        return repository.findProductsByCostAfter(min);
+    }
+
+    public List<Product> findProductsByCostBefore(Integer max) {
+        return repository.findProductsByCostBefore(max);
     }
 }

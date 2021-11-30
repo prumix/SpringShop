@@ -1,6 +1,4 @@
-package ru.prumix.springshop.model;
-
-import org.hibernate.annotations.GenericGenerator;
+package ru.prumix.springshop.entities;
 
 import javax.persistence.*;
 
