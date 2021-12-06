@@ -15,7 +15,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
             });
     }
 
-    $scope.changeCost = function (id, delta) {
+ /*   $scope.changeCost = function (id, delta) {
         $http({
             url: contextPath + '/products/change_cost',
             method: 'GET',
@@ -26,7 +26,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         }).then(function (response) {
             $scope.loadProducts();
         });
-    }
+    }*/
 
     $scope.loadProducts();
 });
