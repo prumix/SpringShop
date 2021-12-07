@@ -1,9 +1,7 @@
 package ru.prumix.springshop.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import ru.prumix.springshop.entities.Product;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
 import ru.prumix.springshop.services.ProductService;
@@ -14,44 +12,61 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController() {
+    }
+
+    @GetMapping("/products/all")
+    public List<Product> getProductsList() {
+        return productService.findAllProducts();
     }
 
     @GetMapping("/products")
-    public List<Product> getProducts(){
-        return productService.findAll();
+    public List<Product> getProductsForFirstPage() {
+        return productService.findAllProductsByFirstPage();
+    }
+
+    @GetMapping("/products/next")
+    public List<Product> getProductsForNextPage() {
+        return productService.findAllProductsByNextPage();
+    }
+
+    @GetMapping("/products/previous")
+    public List<Product> getProductsForPreviousPage() {
+        return productService.findAllProductsByPreviousPage();
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable Long id){
-        return productService.findById(id)
-                .orElseThrow(() ->  new ResourceNotFoundException("Product not found, id: " + id));
+    public Product getProductById(@PathVariable Long id) {
+        return productService.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Product not found, id: " + id)
+        );
     }
 
     @GetMapping("/products/delete/{id}")
-    public void deleteById(@PathVariable Long id){
-        productService.deleteById(id);
+    public List<Product> deleteProductById(@PathVariable Long id) {
+        productService.deleteProductById(id);
+        return productService.findAllProducts();
     }
 
-    @GetMapping("/products/change_cost")
-    public void changeCost(@RequestParam Long id, @RequestParam Integer delta) {
-        productService.changeCost(id, delta);
+    @PostMapping("/products/change_cost")
+    public void changeCost(@RequestParam Long productId, @RequestParam Integer delta) {
+        productService.changeCost(productId, delta);
     }
 
-    @GetMapping("/products/cost_between")
-    public List<Product> findProductsCostBetween(@RequestParam(defaultValue = "0") Integer min,
-                                                    @RequestParam(defaultValue = "100") Integer max) {
-        return productService.findAllByCostBetween(min, max);
+    @GetMapping("/products/filter_by_cost")
+    public List<Product> getFilteredProductsByCost
+            (@RequestParam(defaultValue = "0") Integer min, @RequestParam(defaultValue = "2147483647") Integer max) {
+        return productService.findAllProductsByPrice(min, max);
     }
 
-    @GetMapping("/products/cost_after")
-    public List<Product> findProductsByCostAfter(@RequestParam(defaultValue = "0") Integer min) {
-        return productService.findProductsByCostAfter(min);
+    @PostMapping("/products")
+    @ResponseBody
+    public void addNewProduct(@RequestBody Product product) {
+        productService.add(product);
     }
 
-    @GetMapping("/products/cost_before")
-    public List<Product> findProductsByCostBefore(@RequestParam(defaultValue = "100") Integer max) {
-        return productService.findProductsByCostBefore(max);
+    @Autowired
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
     }
 }
