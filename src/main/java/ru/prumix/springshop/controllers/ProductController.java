@@ -1,6 +1,7 @@
 package ru.prumix.springshop.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import ru.prumix.springshop.entities.Product;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
@@ -15,25 +16,18 @@ public class ProductController {
     public ProductController() {
     }
 
-    @GetMapping("/products/all")
-    public List<Product> getProductsList() {
-        return productService.findAllProducts();
-    }
-
     @GetMapping("/products")
-    public List<Product> getProductsForFirstPage() {
-        return productService.findAllProductsByFirstPage();
+    public Page<Product> getProductsList(
+            @RequestParam(name = "p", defaultValue = "1") Integer page,
+            @RequestParam(name = "min_cost", defaultValue = "0") Integer minCost,
+            @RequestParam(name = "max_cost", required = false) Integer maxCost
+    ) {
+        if (page<1){
+            page = 1;
+        }
+        return productService.find(minCost,maxCost,page);
     }
 
-    @GetMapping("/products/next")
-    public List<Product> getProductsForNextPage() {
-        return productService.findAllProductsByNextPage();
-    }
-
-    @GetMapping("/products/previous")
-    public List<Product> getProductsForPreviousPage() {
-        return productService.findAllProductsByPreviousPage();
-    }
 
     @GetMapping("/products/{id}")
     public Product getProductById(@PathVariable Long id) {
@@ -46,23 +40,6 @@ public class ProductController {
     public List<Product> deleteProductById(@PathVariable Long id) {
         productService.deleteProductById(id);
         return productService.findAllProducts();
-    }
-
-    @PostMapping("/products/change_cost")
-    public void changeCost(@RequestParam Long productId, @RequestParam Integer delta) {
-        productService.changeCost(productId, delta);
-    }
-
-    @GetMapping("/products/filter_by_cost")
-    public List<Product> getFilteredProductsByCost
-            (@RequestParam(defaultValue = "0") Integer min, @RequestParam(defaultValue = "2147483647") Integer max) {
-        return productService.findAllProductsByPrice(min, max);
-    }
-
-    @PostMapping("/products")
-    @ResponseBody
-    public void addNewProduct(@RequestBody Product product) {
-        productService.add(product);
     }
 
     @Autowired

@@ -2,13 +2,16 @@ package ru.prumix.springshop.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.prumix.springshop.entities.Product;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
 import ru.prumix.springshop.repositories.ProductRepository;
+import ru.prumix.springshop.repositories.specifications.ProductSpecifications;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -16,29 +19,22 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
-   private ProductRepository productRepository;
+    private ProductRepository productRepository;
 
-    private Pageable page = PageRequest.of(0, 5, Sort.by("id").ascending());;
-
-    public ProductService() {
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    public List<Product> findAllProductsByFirstPage() {
-        return productRepository.findAll(page).getContent();
+    public Page<Product> find(Integer minCost, Integer maxCost, Integer page){
+        Specification<Product> spec =Specification.where(null);
+        if (minCost != null){
+            spec = spec.and(ProductSpecifications.costGreaterOrEqualsThan(minCost));
+        }
+        if (maxCost !=null){
+            spec = spec.and(ProductSpecifications.costLessThanOrEqualsThan(maxCost));
+        }
+        return productRepository.findAll(spec, PageRequest.of(page-1, 5));
     }
-
-    public List<Product> findAllProductsByNextPage() {
-        Pageable next = page.next();
-        setPage(next);
-        return productRepository.findAll(next).getContent();
-    }
-
-    public List<Product> findAllProductsByPreviousPage() {
-        Pageable previous = page.previousOrFirst();
-        setPage(previous);
-        return productRepository.findAll(previous).getContent();
-    }
-
 
     public List<Product> findAllProducts() {
         return productRepository.findAll();
@@ -53,29 +49,4 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public List<Product> findAllProductsByPrice(Integer min, Integer max) {
-        return productRepository.findAllByCostBetween(min, max);
-    }
-
-    public void add(Product product) {
-        productRepository.save(product);
-    }
-
-    @Transactional
-    public void changeCost(Long productId, Integer delta) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(
-                "Unable to change product's cost. Product not found, id: " + productId)
-        );
-        product.setCost(delta);
-        productRepository.save(product);
-    }
-
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    public void setPage(Pageable page) {
-        this.page = page;
-    }
 }
