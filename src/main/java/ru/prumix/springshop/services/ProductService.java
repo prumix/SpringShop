@@ -32,7 +32,7 @@ public class ProductService {
             spec = spec.and(ProductSpecifications.titleLike(partTitle));
         }
 
-        return productRepository.findAll(spec, PageRequest.of(page - 1, 50));
+        return productRepository.findAll(spec, PageRequest.of(page - 1, 5));
     }
 
     public Optional<Product> findById(Long id) {

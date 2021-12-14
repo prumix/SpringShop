@@ -15,5 +15,5 @@ angular.module('app', []).controller('productController', function ($scope, $htt
         });
     };
 
-    $scope.loadProducts();
+       $scope.loadProducts();
 });
