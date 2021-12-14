@@ -6,38 +6,14 @@ angular.module('app', []).controller('productController', function ($scope, $htt
             url: contextPath + '/products',
             method: 'GET',
             params: {
+                title_part: $scope.filter ? $scope.filter.title_part : null,
                 min_cost: $scope.filter ? $scope.filter.min_cost : null,
                 max_cost: $scope.filter ? $scope.filter.max_cost : null
             }
         }).then(function (response) {
-            $scope.ProductsList = response.data.content;
+            $scope.ProductsList = response.data;
         });
-
     };
-
-    $scope.findProductById = function (id) {
-        $http.get(contextPath + '/products/' + id)
-            .then(function (response) {
-                $scope.ProductsList = response.data;
-                console.log(response.data);
-            });
-    }
-
-    $scope.createProduct = function () {
-        console.log($scope.newProduct);
-        $http.post(contextPath + '/products', $scope.newProduct)
-            .then(function (response) {
-                $scope.loadProducts();
-            });
-    }
-
-    $scope.deleteProduct = function (id) {
-        $http.delete(contextPath + '/products/' + id)
-            .then(function (response) {
-                $scope.loadProducts();
-            });
-    }
-
 
     $scope.loadProducts();
 });
