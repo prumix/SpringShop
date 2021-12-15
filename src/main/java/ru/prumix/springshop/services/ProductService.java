@@ -54,4 +54,8 @@ public class ProductService {
         product.setTitle(productDto.getTitle());
         return product;
     }
+
+    public String findByTitle(Long id){
+       return productRepository.findProductTitleById(id);
+    }
 }

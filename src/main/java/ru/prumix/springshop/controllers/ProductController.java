@@ -10,7 +10,8 @@ import ru.prumix.springshop.exceptions.ResourceNotFoundException;
 import ru.prumix.springshop.services.ProductService;
 import ru.prumix.springshop.validators.ProductValidator;
 
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.Map;
 
 
 @RestController
@@ -20,6 +21,13 @@ public class ProductController {
     private final ProductService productsService;
     private final ProductConverter productConverter;
     private final ProductValidator productValidator;
+    private final Map<String, Integer> orderMap;
+
+    @PostConstruct
+    public void init() {
+        orderMap.put("product3", 1);
+        orderMap.put("product4", 1);
+    }
 
     @GetMapping
     public Page<ProductDto> getProductsList(
@@ -28,10 +36,10 @@ public class ProductController {
             @RequestParam(name = "max_cost", required = false) Integer maxCost,
             @RequestParam(name = "title_part", required = false) String titlePart
     ) {
-        if (page<1){
+        if (page < 1) {
             page = 1;
         }
-        return productsService.findAll(minCost,maxCost,titlePart,page).map(productConverter::entityToDto);
+        return productsService.findAll(minCost, maxCost, titlePart, page).map(productConverter::entityToDto);
     }
 
 
@@ -42,7 +50,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDto saveNewProduct(@RequestBody ProductDto productDto){
+    public ProductDto saveNewProduct(@RequestBody ProductDto productDto) {
         productValidator.validate(productDto);
         Product product = productConverter.dtoToEntity(productDto);
         product = productsService.save(product);
@@ -55,10 +63,25 @@ public class ProductController {
     }
 
     @PutMapping
-    public ProductDto updateProduct(@RequestBody ProductDto productDto){
+    public ProductDto updateProduct(@RequestBody ProductDto productDto) {
         productValidator.validate(productDto);
         Product product = productsService.update(productDto);
         return productConverter.entityToDto(product);
     }
 
+    @PostMapping("/order/changeCount")
+    public void changeCount(@RequestParam String title, @RequestParam Integer delta) {
+        orderMap.put(title, orderMap.get(title) + delta);
+    }
+
+    @GetMapping("/order")
+    public Map<String, Integer> getOrder() {
+        return orderMap;
+    }
+
+    @PostMapping("/order/add")
+    public void addToOrder(@RequestParam Long id) {
+        orderMap.put(productsService.findByTitle(id),1);
+
+    }
 }
