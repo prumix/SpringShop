@@ -1,22 +1,15 @@
 package ru.prumix.springshop.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import ru.prumix.springshop.converters.ProductConverter;
 import ru.prumix.springshop.dto.ProductDto;
-import ru.prumix.springshop.entities.Order;
 import ru.prumix.springshop.entities.Product;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
-import ru.prumix.springshop.services.OrderService;
 import ru.prumix.springshop.services.ProductService;
 import ru.prumix.springshop.validators.ProductValidator;
 
-import javax.annotation.PostConstruct;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -27,7 +20,7 @@ public class ProductController {
     private final ProductService productsService;
     private final ProductConverter productConverter;
     private final ProductValidator productValidator;
-    private final OrderService orderService;
+
 
     @GetMapping
     public Page<ProductDto> getProductsList(
@@ -67,29 +60,5 @@ public class ProductController {
         productValidator.validate(productDto);
         Product product = productsService.update(productDto);
         return productConverter.entityToDto(product);
-    }
-
-    @PostMapping("/order/changeCount")
-    public void changeCount(@RequestParam Integer delta, @RequestParam Long index) {
-        Order order = orderService.findByIndex(index);
-        Integer startCost = productsService.findById(order.getProductDto().getId()).get().getCost();
-        order.setCount(order.getCount() + delta);
-        order.getProductDto().setCost(startCost*order.getCount());
-        orderService.updateOrder(order,index);
-
-
-    }
-
-    @GetMapping("/order")
-    public Map<Long, Order> getOrder() {
-        return orderService.findAll();
-    }
-
-    @PostMapping("/order/add")
-    public void addToOrder(@RequestParam Long id, @RequestParam String title, @RequestParam Integer cost) {
-        ProductDto productDto = new ProductDto(id, title, cost);
-        orderService.addOrder(productDto);
-
-
     }
 }
