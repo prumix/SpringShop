@@ -20,8 +20,8 @@ public class Product {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "cost")
-    private int cost;
+    @Column(name = "price")
+    private int price;
 
 
 }
