@@ -54,6 +54,17 @@ angular.module('app', ['ui.bootstrap', 'ngStorage']).controller('productControll
                 });
         }
 
+        $scope.createOrder = function (){
+            var postData = {
+                'cart': $scope.Cart,
+                'userName': $localStorage.springWebUser.username
+            }
+            $http.post('http://localhost:8080/app/api/v1/orders', angular.toJson(postData))
+                .then(function (response){
+                    alert('Заказ оформлен')
+                    $scope.clearCart();
+                })
+        }
 
         $scope.changeCount = function (username,id, delta) {
             $http({

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import ru.prumix.springshop.converters.ProductConverter;
+import ru.prumix.springshop.dto.Cart;
 import ru.prumix.springshop.dto.ProductDto;
 import ru.prumix.springshop.entities.Product;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
