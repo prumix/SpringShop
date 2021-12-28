@@ -24,8 +24,8 @@ angular.module('app', ['ui.bootstrap', 'ngStorage']).controller('productControll
                 params: {
                     p: pageIndex,
                     title_part: $scope.filter ? $scope.filter.title_part : null,
-                    min_cost: $scope.filter ? $scope.filter.min_cost : null,
-                    max_cost: $scope.filter ? $scope.filter.max_cost : null
+                    min_price: $scope.filter ? $scope.filter.min_price : null,
+                    max_price: $scope.filter ? $scope.filter.max_price : null
                 }
             }).then(function (response) {
                 $scope.ProductsPage = response.data;
@@ -33,23 +33,26 @@ angular.module('app', ['ui.bootstrap', 'ngStorage']).controller('productControll
             });
         };
 
+        $scope.addToCart = function (productId) {
+            $http.get('http://localhost:8080/app/api/v1/carts/add/' + productId)
+                .then(function (response) {
+                    $scope.loadCart();
+                });
+        }
 
+        $scope.clearCart = function () {
+            $http.get('http://localhost:8080/app/api/v1/carts/clear')
+                .then(function (response) {
+                    $scope.loadCart();
+                });
+        }
 
-
-
-        $scope.loadOrders = function () {
-            let username = $localStorage.springWebUser.username;
-            $http({
-                url: contextPath + '/order',
-                method: 'GET',
-                params:{
-                    username: username
-                }
-            }).then(function (response){
-                $scope.OrderList = response.data;
-                console.log(response)
-            })
-        };
+        $scope.loadCart = function () {
+            $http.get('http://localhost:8080/app/api/v1/carts')
+                .then(function (response) {
+                    $scope.Cart = response.data;
+                });
+        }
 
 
         $scope.changeCount = function (username,id, delta) {
@@ -65,23 +68,6 @@ angular.module('app', ['ui.bootstrap', 'ngStorage']).controller('productControll
                 $scope.loadOrders();
             }).catch(function (err) {
                 return errorService.handleError(error);
-            });
-        }
-
-        $scope.addProductToOrders = function (p) {
-            let username = $localStorage.springWebUser.username
-            $http({
-                url: contextPath + '/order/add',
-                method: 'POST',
-                params: {
-                    id: p.id,
-                    username: username,
-                    title: p.title,
-                    cost: p.cost
-                }
-            }).then(function (response) {
-                $scope.loadOrders();
-                console.log(response)
             });
         }
 
@@ -134,6 +120,6 @@ angular.module('app', ['ui.bootstrap', 'ngStorage']).controller('productControll
 
 
         $scope.loadProducts();
-        $scope.loadOrders();
+        $scope.loadCart();
     })
 ;

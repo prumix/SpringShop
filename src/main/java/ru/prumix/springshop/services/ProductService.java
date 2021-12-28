@@ -23,10 +23,10 @@ public class ProductService {
     public Page<Product> findAll(Integer minPrice, Integer maxPrice, String partTitle, Integer page) {
         Specification<Product> spec = Specification.where(null);
         if (minPrice != null) {
-            spec = spec.and(ProductSpecifications.costGreaterOrEqualsThan(minPrice));
+            spec = spec.and(ProductSpecifications.priceGreaterOrEqualsThan(minPrice));
         }
         if (maxPrice != null) {
-            spec = spec.and(ProductSpecifications.costLessThanOrEqualsThan(maxPrice));
+            spec = spec.and(ProductSpecifications.priceLessThanOrEqualsThan(maxPrice));
         }
         if (partTitle != null) {
             spec = spec.and(ProductSpecifications.titleLike(partTitle));
@@ -50,7 +50,7 @@ public class ProductService {
     @Transactional
     public Product update(ProductDto productDto) {
         Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Невозможно обновить продукта, не надйен в базе, id: " + productDto.getId()));
-        product.setCost(productDto.getCost());
+        product.setPrice(productDto.getPrice());
         product.setTitle(productDto.getTitle());
         return product;
     }
