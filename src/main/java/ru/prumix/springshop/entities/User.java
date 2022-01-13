@@ -1,9 +1,6 @@
 package ru.prumix.springshop.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -11,13 +8,10 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-@Data
 @Entity
+@Data
 @Table(name = "users")
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -45,5 +39,4 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
 }

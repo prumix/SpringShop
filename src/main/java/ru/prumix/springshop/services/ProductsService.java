@@ -10,52 +10,48 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.prumix.springshop.dto.ProductDto;
 import ru.prumix.springshop.entities.Product;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
-import ru.prumix.springshop.repositories.ProductRepository;
-import ru.prumix.springshop.repositories.specifications.ProductSpecifications;
+import ru.prumix.springshop.repositories.ProductsRepository;
+import ru.prumix.springshop.repositories.specifications.ProductsSpecifications;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService {
-    private final ProductRepository productRepository;
+public class ProductsService {
+    private final ProductsRepository productsRepository;
+
     public Page<Product> findAll(Integer minPrice, Integer maxPrice, String partTitle, Integer page) {
         Specification<Product> spec = Specification.where(null);
         if (minPrice != null) {
-            spec = spec.and(ProductSpecifications.priceGreaterOrEqualsThan(minPrice));
+            spec = spec.and(ProductsSpecifications.priceGreaterOrEqualsThan(minPrice));
         }
         if (maxPrice != null) {
-            spec = spec.and(ProductSpecifications.priceLessThanOrEqualsThan(maxPrice));
+            spec = spec.and(ProductsSpecifications.priceLessThanOrEqualsThan(maxPrice));
         }
         if (partTitle != null) {
-            spec = spec.and(ProductSpecifications.titleLike(partTitle));
+            spec = spec.and(ProductsSpecifications.titleLike(partTitle));
         }
 
-        return productRepository.findAll(spec, PageRequest.of(page - 1, 5));
+        return productsRepository.findAll(spec, PageRequest.of(page - 1, 50));
     }
 
     public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
+        return productsRepository.findById(id);
     }
 
     public void deleteById(Long id) {
-        productRepository.deleteById(id);
+        productsRepository.deleteById(id);
     }
 
     public Product save(Product product) {
-        return productRepository.save(product);
+        return productsRepository.save(product);
     }
 
     @Transactional
     public Product update(ProductDto productDto) {
-        Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Невозможно обновить продукта, не надйен в базе, id: " + productDto.getId()));
+        Product product = productsRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Невозможно обновить продукта, не надйен в базе, id: " + productDto.getId()));
         product.setPrice(productDto.getPrice());
         product.setTitle(productDto.getTitle());
         return product;
-    }
-
-    public String findByTitle(Long id){
-       return productRepository.findProductTitleById(id);
     }
 }

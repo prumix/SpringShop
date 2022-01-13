@@ -1,6 +1,5 @@
 package ru.prumix.springshop.controllers;
 
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +12,6 @@ import java.security.Principal;
 public class ProfileController {
     @GetMapping
     public ProfileDto getCurrentUserInfo(Principal principal) {
-        // User user = userService.findByUsername(principal.getName());
-        return new ProfileDto(principal.getName(), null, null, null);
+        return new ProfileDto(principal.getName());
     }
 }

@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-    private final ProductService productsService;
+    private final ProductsService productsService;
     private Cart cart;
 
     @PostConstruct
