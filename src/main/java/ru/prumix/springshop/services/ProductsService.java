@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.prumix.springshop.dto.ProductDto;
 import ru.prumix.springshop.entities.Product;
+import ru.prumix.springshop.entities.ProductCategory;
 import ru.prumix.springshop.exceptions.ResourceNotFoundException;
 import ru.prumix.springshop.repositories.ProductsRepository;
 import ru.prumix.springshop.repositories.specifications.ProductsSpecifications;
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class ProductsService {
     private final ProductsRepository productsRepository;
 
-    public Page<Product> findAll(Integer minPrice, Integer maxPrice, String partTitle, Integer page) {
+    public Page<Product> findAll(Integer minPrice, Integer maxPrice, String partTitle, String partCat, Integer page) {
         Specification<Product> spec = Specification.where(null);
         if (minPrice != null) {
             spec = spec.and(ProductsSpecifications.priceGreaterOrEqualsThan(minPrice));
@@ -30,6 +31,9 @@ public class ProductsService {
         }
         if (partTitle != null) {
             spec = spec.and(ProductsSpecifications.titleLike(partTitle));
+        }
+        if (partCat != null){
+            spec = spec.and(ProductsSpecifications.categoryLike(partCat));
         }
 
         return productsRepository.findAll(spec, PageRequest.of(page - 1, 50));
