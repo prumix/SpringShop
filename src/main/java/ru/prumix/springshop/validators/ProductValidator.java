@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.prumix.springshop.dto.ProductDto;
 import ru.prumix.springshop.exceptions.ValidationException;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

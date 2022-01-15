@@ -4,18 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.prumix.springshop.entities.Product;
-import ru.prumix.springshop.entities.Role;
-
-import javax.persistence.*;
-import java.util.Collection;
+import ru.prumix.springshop.entities.ProductCategory;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductDto {
-
     private Long id;
     private String title;
-    private int price;
+    private String category;
+    private Integer price;
 
+    public ProductDto(Product product, ProductCategory productCategory) {
+        this.id = product.getId();
+        this.title = product.getTitle();
+        this.category = productCategory.getTitle();
+        this.price = product.getPrice();
+    }
 }

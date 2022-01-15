@@ -1,36 +1,41 @@
 package ru.prumix.springshop.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 @Entity
+@Table(name = "order_items")
 @Data
-@Table(name = "users")
-public class User {
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "username")
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    @Column(name = "password")
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "quantity")
+    private Integer quantity;
 
-    @ManyToMany
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    @Column(name = "price_per_product")
+    private Integer pricePerProduct;
+
+    @Column(name = "price")
+    private Integer price;
 
     @CreationTimestamp
     @Column(name = "created_at")

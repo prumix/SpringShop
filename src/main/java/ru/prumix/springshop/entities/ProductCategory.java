@@ -1,6 +1,8 @@
 package ru.prumix.springshop.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,15 +11,18 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "roles")
-public class Role {
+@Table(name = "category")
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductCategory {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "title")
+    private String title;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -26,4 +31,8 @@ public class Role {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public ProductCategory(String title) {
+        this.title = title;
+    }
 }
