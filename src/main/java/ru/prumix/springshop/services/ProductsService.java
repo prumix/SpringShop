@@ -14,7 +14,10 @@ import ru.prumix.springshop.exceptions.ResourceNotFoundException;
 import ru.prumix.springshop.repositories.ProductsRepository;
 import ru.prumix.springshop.repositories.specifications.ProductsSpecifications;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class ProductsService {
         return productsRepository.findAll(spec, PageRequest.of(page - 1, 50));
     }
 
+
     public Optional<Product> findById(Long id) {
         return productsRepository.findById(id);
     }
@@ -57,5 +61,24 @@ public class ProductsService {
         product.setPrice(productDto.getPrice());
         product.setTitle(productDto.getTitle());
         return product;
+    }
+
+
+
+    public static final Function<Product, ru.prumix.springshop.saop.product.Product> functionEntityToSoap = se -> {
+        ru.prumix.springshop.saop.product.Product s = new ru.prumix.springshop.saop.product.Product();
+        s.setId(se.getId());
+        s.setTitle(se.getTitle());
+        s.setPrice(se.getPrice());
+        s.setCategory(se.getProductCategory().getTitle());
+        return s;
+    };
+
+    public List<ru.prumix.springshop.saop.product.Product> getAllProducts() {
+        return productsRepository.findAll().stream().map(functionEntityToSoap).collect(Collectors.toList());
+    }
+
+    public ru.prumix.springshop.saop.product.Product getById(Long id) {
+        return productsRepository.findById(id).map(functionEntityToSoap).get();
     }
 }

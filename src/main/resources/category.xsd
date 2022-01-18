@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="http://www.karexander.com/spring/ws/category"
+        targetNamespace="http://www.karexander.com/spring/ws/category" elementFormDefault="qualified">
+
+    <xs:import schemaLocation="product.xsd" namespace="http://www.karexander.com/spring/ws/product"/>
+
+    <xs:element name="GetCategoryByTitleRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="title" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="GetCategoryByTitleResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="category" type="tns:category"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="category">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="title" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
