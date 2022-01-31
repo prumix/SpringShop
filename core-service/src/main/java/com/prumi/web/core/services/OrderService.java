@@ -11,6 +11,7 @@ import com.prumi.web.core.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrdersRepository ordersRepository;
     private final ProductsService productsService;
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Transactional
-    public void createOrder(String username, OrderDetailsDto orderDetailsDto, CartDto cartDto) {
+    public void createOrder(String username, OrderDetailsDto orderDetailsDto) {
+        CartDto cartDto = restTemplate.getForObject("http://localhost:5555/cart/api/v1/cart/{uuid}",CartDto.class,username);
         Order order = new Order();
         order.setAddress(orderDetailsDto.getAddress());
         order.setPhone(orderDetailsDto.getPhone());
