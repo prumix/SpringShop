@@ -1,15 +1,12 @@
 angular.module('market-front').controller('cartController', function ($scope, $http, $location, $localStorage) {
     const contextPath = 'http://localhost:5555/cart/';
 
-    let cartDto;
-
     $scope.loadCart = function () {
         $http({
             url: contextPath + 'api/v1/cart/' + $localStorage.springWebGuestCartId,
             method: 'GET'
         }).then(function (response) {
             $scope.cart = response.data;
-            cartDto = $scope.cart;
         });
     };
 
@@ -25,15 +22,7 @@ angular.module('market-front').controller('cartController', function ($scope, $h
     }
 
     $scope.checkOut = function () {
-        let orderDetailsDto = $scope.orderDetails;
-
-
-        let cartAndOrderDetails = {
-            orderDetailsDto,
-            cartDto
-        }
-        console.log($scope.cartAndOrderDetails)
-        $http.post('http://localhost:5555/core/api/v1/orders', cartAndOrderDetails)
+        $http.post('http://localhost:5555/core/api/v1/orders', $scope.orderDetails)
             .then(function (response) {
                 $scope.clearCart();
                 $scope.orderDetails = null

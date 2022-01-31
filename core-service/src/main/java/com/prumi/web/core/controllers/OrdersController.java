@@ -29,10 +29,8 @@ public class OrdersController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(@RequestHeader String username,
-                            @RequestBody CartAndOrderDetails cartAndOrderDetails) {
-        CartDto cartDto = cartAndOrderDetails.getCartDto();
-        OrderDetailsDto orderDetailsDto = cartAndOrderDetails.getOrderDetailsDto();
-        orderService.createOrder(username, orderDetailsDto, cartDto);
+                            @RequestBody OrderDetailsDto orderDetailsDto) {
+        orderService.createOrder(username, orderDetailsDto);
     }
 
     @GetMapping

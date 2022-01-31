@@ -6,7 +6,6 @@ import com.prumi.web.api.dto.CartDto;
 import com.prumi.web.api.dto.ProductDto;
 import com.prumi.web.api.dto.StringResponse;
 import com.rumi.web.cart.converters.CartConverter;
-import com.rumi.web.cart.dto.Cart;
 import com.rumi.web.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +50,7 @@ public class CartsController {
     }
 
     @GetMapping("/{uuid}/merge")
-    public void merge(@RequestHeader(required = false) String username, @PathVariable String uuid) {
+    public void merge(@RequestHeader String username, @PathVariable String uuid) {
         cartService.merge(
                 getCurrentCartUuid(username, null),
                 getCurrentCartUuid(null, uuid)
