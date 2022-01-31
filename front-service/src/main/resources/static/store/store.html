@@ -45,7 +45,7 @@
                     <td>{{p.category}}</td>
                     <td>{{p.price}}</td>
                     <td>
-                        <button class="btn btn-primary" ng-click="addToCart(p.id)">Добавить в корзину</button>
+                        <button class="btn btn-primary" ng-model="p" ng-click="addToCart(p)">Добавить в корзину</button>
                     </td>
                 </tr>
                 </tbody>

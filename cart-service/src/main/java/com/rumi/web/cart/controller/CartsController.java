@@ -1,9 +1,13 @@
-package com.prumi.web.core.controllers;
+package com.rumi.web.cart.controller;
 
 
+
+import com.prumi.web.api.dto.CartDto;
+import com.prumi.web.api.dto.ProductDto;
 import com.prumi.web.api.dto.StringResponse;
-import com.prumi.web.core.dto.Cart;
-import com.prumi.web.core.services.CartService;
+import com.rumi.web.cart.converters.CartConverter;
+import com.rumi.web.cart.dto.Cart;
+import com.rumi.web.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CartsController {
     private final CartService cartService;
+    private final CartConverter cartConverter;
 
     @GetMapping("/{uuid}")
-    public Cart getCart(@RequestHeader(required = false) String username, @PathVariable String uuid) {
-        return cartService.getCurrentCart(getCurrentCartUuid(username, uuid));
+    public CartDto getCart(@RequestHeader(required = false) String username, @PathVariable String uuid) {
+        return cartConverter.entityToDto(cartService.getCurrentCart(getCurrentCartUuid(username, uuid)));
     }
 
     @GetMapping("/generate")
@@ -24,9 +29,10 @@ public class CartsController {
         return new StringResponse(cartService.generateCartUuid());
     }
 
-    @GetMapping("/{uuid}/add/{productId}")
-    public void add(@RequestHeader(required = false) String username, @PathVariable String uuid, @PathVariable Long productId) {
-        cartService.addToCart(getCurrentCartUuid(username, uuid), productId);
+    @PostMapping("/{uuid}/add/")
+    public void add(@RequestHeader(required = false) String username, @PathVariable String uuid, @RequestBody ProductDto productDto) {
+        cartService.addToCart(getCurrentCartUuid(username, uuid), productDto);
+
     }
 
     @GetMapping("/{uuid}/decrement/{productId}")

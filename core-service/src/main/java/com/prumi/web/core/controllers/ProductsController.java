@@ -1,9 +1,9 @@
 package com.prumi.web.core.controllers;
 
 
+import com.prumi.web.api.dto.ProductDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
 import com.prumi.web.core.converters.ProductConverter;
-import com.prumi.web.core.dto.ProductDto;
 import com.prumi.web.core.entities.Product;
 import com.prumi.web.core.services.ProductsService;
 import com.prumi.web.core.validators.ProductValidator;

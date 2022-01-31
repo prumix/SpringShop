@@ -1,4 +1,4 @@
-package com.prumi.web.core.configs;
+package com.rumi.web.cart.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,9 +1,9 @@
 angular.module('market-front').controller('storeController', function ($scope, $http, $location, $localStorage) {
-    const contextPath = 'http://localhost:5555/core/';
+    const contextPath = 'http://localhost:5555';
 
     $scope.loadProducts = function (pageIndex = 1) {
         $http({
-            url: contextPath + 'api/v1/products',
+            url: contextPath + '/core/api/v1/products',
             method: 'GET',
             params: {
                 p: pageIndex,
@@ -13,7 +13,6 @@ angular.module('market-front').controller('storeController', function ($scope, $
                 max_price: $scope.filter ? $scope.filter.max_price : null
             }
         }).then(function (response) {
-            console.log(response)
             $scope.ProductsPage = response.data;
             $scope.paginationArray = $scope.generatePagesIndexes(1, $scope.ProductsPage.totalPages);
 
@@ -28,11 +27,16 @@ angular.module('market-front').controller('storeController', function ($scope, $
         return arr;
     }
 
-    $scope.addToCart = function (productId) {
-        $http.get(contextPath + 'api/v1/cart/' + $localStorage.springWebGuestCartId + '/add/' + productId)
+    $scope.addToCart = function (productDto) {
+       /* $http.get(contextPath + '/cart/api/v1/cart/' + $localStorage.springWebGuestCartId + '/add/' + productDto)
+            .then(function (response) {
+            });*/
+        $http.post(contextPath + '/cart/api/v1/cart/' + $localStorage.springWebGuestCartId + '/add/',productDto)
             .then(function (response) {
             });
     }
+
+
 
     $scope.loadProducts();
 });

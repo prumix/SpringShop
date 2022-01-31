@@ -1,0 +1,13 @@
+server:
+  port: 8190
+  servlet:
+    context-path: /web-market-cart
+
+utils:
+  cart:
+    prefix: SPRING_WEB_
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
