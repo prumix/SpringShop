@@ -1,7 +1,8 @@
-package com.prumi.web.core.dto;
+package com.rumi.web.cart.dto;
 
 
-import com.prumi.web.core.entities.Product;
+import com.prumi.web.api.dto.OrderItemDto;
+import com.prumi.web.api.dto.ProductDto;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class Cart {
         this.items = new ArrayList<>();
     }
 
-    public void add(Product product) {
+    public void add(ProductDto product) {
         if (add(product.getId())) {
             return;
         }

@@ -1,9 +1,10 @@
 package com.prumi.web.core.services;
 
 
+import com.prumi.web.api.dto.CartAndOrderDetails;
+import com.prumi.web.api.dto.CartDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
-import com.prumi.web.core.dto.Cart;
-import com.prumi.web.core.dto.OrderDetailsDto;
+import com.prumi.web.api.dto.OrderDetailsDto;
 import com.prumi.web.core.entities.Order;
 import com.prumi.web.core.entities.OrderItem;
 import com.prumi.web.core.repositories.OrdersRepository;
@@ -18,19 +19,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrdersRepository ordersRepository;
-    private final CartService cartService;
     private final ProductsService productsService;
 
     @Transactional
-    public void createOrder(String username, OrderDetailsDto orderDetailsDto) {
-        String cartKey = cartService.getCartUuidFromSuffix(username);
-        Cart currentCart = cartService.getCurrentCart(cartKey);
+    public void createOrder(String username, OrderDetailsDto orderDetailsDto, CartDto cartDto) {
         Order order = new Order();
         order.setAddress(orderDetailsDto.getAddress());
         order.setPhone(orderDetailsDto.getPhone());
         order.setUsername(username);
-        order.setTotalPrice(currentCart.getTotalPrice());
-        List<OrderItem> items = currentCart.getItems().stream()
+        order.setTotalPrice(cartDto.getTotalPrice());
+        List<OrderItem> items = cartDto.getItems().stream()
                 .map(o -> {
                     OrderItem item = new OrderItem();
                     item.setOrder(order);
@@ -42,7 +40,6 @@ public class OrderService {
                 }).collect(Collectors.toList());
         order.setItems(items);
         ordersRepository.save(order);
-        cartService.clearCart(cartKey);
     }
 
     public List<Order> findOrdersByUsername(String username) {

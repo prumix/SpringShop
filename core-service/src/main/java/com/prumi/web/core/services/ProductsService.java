@@ -1,8 +1,8 @@
 package com.prumi.web.core.services;
 
 
+import com.prumi.web.api.dto.ProductDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
-import com.prumi.web.core.dto.ProductDto;
 import com.prumi.web.core.entities.Product;
 import com.prumi.web.core.repositories.ProductsRepository;
 import com.prumi.web.core.repositories.specifications.ProductsSpecifications;

@@ -1,6 +1,5 @@
-package com.prumi.web.core.dto;
+package com.prumi.web.api.dto;
 
-import com.prumi.web.core.entities.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ public class OrderItemDto {
     private int pricePerProduct;
     private int price;
 
-    public OrderItemDto(Product product) {
+    public OrderItemDto(ProductDto product) {
         this.productId = product.getId();
         this.productTitle = product.getTitle();
         this.quantity = 1;

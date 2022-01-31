@@ -1,4 +1,4 @@
-package com.prumi.web.core.dto;
+package com.prumi.web.api.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

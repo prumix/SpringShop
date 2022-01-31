@@ -1,5 +1,6 @@
 package com.prumi.web.core.dto;
 
+import com.prumi.web.api.dto.OrderItemDto;
 import lombok.Data;
 
 import java.util.List;
