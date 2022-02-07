@@ -1,7 +1,7 @@
 package com.prumi.web.core.converters;
 
 
-import com.prumi.web.core.dto.OrderDto;
+import com.prumi.web.api.core.OrderDto;
 import com.prumi.web.core.entities.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

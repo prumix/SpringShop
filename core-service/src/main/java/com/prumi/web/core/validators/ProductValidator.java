@@ -1,7 +1,7 @@
 package com.prumi.web.core.validators;
 
 
-import com.prumi.web.api.dto.ProductDto;
+import com.prumi.web.api.core.ProductDto;
 import com.prumi.web.core.exceptions.ValidationException;
 import org.springframework.stereotype.Component;
 

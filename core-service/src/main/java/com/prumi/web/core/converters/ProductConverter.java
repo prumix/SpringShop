@@ -1,6 +1,6 @@
 package com.prumi.web.core.converters;
 
-import com.prumi.web.api.dto.ProductDto;
+import com.prumi.web.api.core.ProductDto;
 import com.prumi.web.core.entities.Product;
 import com.prumi.web.core.entities.ProductCategory;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,10 @@
 package com.rumi.web.cart.service;
 
 
-import com.prumi.web.api.dto.ProductDto;
-import com.rumi.web.cart.dto.Cart;
+import com.prumi.web.api.core.ProductDto;
+import com.prumi.web.api.exceptions.ResourceNotFoundException;
+import com.rumi.web.cart.integrations.ProductsServiceIntegration;
+import com.rumi.web.cart.models.Cart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,6 +16,7 @@ import java.util.function.Consumer;
 @Service
 @RequiredArgsConstructor
 public class CartService {
+    private final ProductsServiceIntegration productsServiceIntegration;
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${utils.cart.prefix}")
@@ -34,11 +37,11 @@ public class CartService {
         return (Cart) redisTemplate.opsForValue().get(cartKey);
     }
 
-    public void addToCart(String cartKey, ProductDto productDto) {
+    public void addToCart(String cartKey, Long productId) {
+        ProductDto productDto = productsServiceIntegration.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Невозможно добавить продукт в корзину. Продукт не найдет, id: " + productId));
         execute(cartKey, c -> {
             c.add(productDto);
         });
-
     }
 
     public void clearCart(String cartKey) {

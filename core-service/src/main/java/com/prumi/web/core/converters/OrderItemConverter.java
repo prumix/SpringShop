@@ -1,7 +1,7 @@
 package com.prumi.web.core.converters;
 
 
-import com.prumi.web.api.dto.OrderItemDto;
+import com.prumi.web.api.core.OrderItemDto;
 import com.prumi.web.core.entities.OrderItem;
 import org.springframework.stereotype.Component;
 

@@ -1,12 +1,20 @@
 package com.rumi.web.cart.converters;
 
-import com.prumi.web.api.dto.CartDto;
-import com.rumi.web.cart.dto.Cart;
+import com.prumi.web.api.carts.CartDto;
+import com.prumi.web.api.carts.CartItemDto;
+import com.rumi.web.cart.models.Cart;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CartConverter {
-    public CartDto entityToDto(Cart cart){
-        return new CartDto(cart.getItems(),cart.getTotalPrice());
+    public CartDto modelToDto(Cart cart) {
+        List<CartItemDto> cartItemDtos = cart.getItems().stream().map(it ->
+                new CartItemDto(it.getProductId(), it.getProductTitle(), it.getQuantity(), it.getPricePerProduct(), it.getPrice())
+        ).collect(Collectors.toList());
+        CartDto cartDto = new CartDto(cartItemDtos, cart.getTotalPrice());
+        return cartDto;
     }
 }

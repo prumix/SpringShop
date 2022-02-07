@@ -5,9 +5,13 @@ server:
 
 utils:
   cart:
-    prefix: SPRING_WEB_
+    prefix: SPRING_WEB_APP_
 
 spring:
   redis:
     host: localhost
     port: 6379
+
+integrations:
+  core-service:
+    url: http://localhost:5555/core

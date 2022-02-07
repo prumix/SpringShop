@@ -1,9 +1,6 @@
 package com.rumi.web.cart.controller;
 
-
-
-import com.prumi.web.api.dto.CartDto;
-import com.prumi.web.api.dto.ProductDto;
+import com.prumi.web.api.carts.CartDto;
 import com.prumi.web.api.dto.StringResponse;
 import com.rumi.web.cart.converters.CartConverter;
 import com.rumi.web.cart.service.CartService;
@@ -20,7 +17,7 @@ public class CartsController {
 
     @GetMapping("/{uuid}")
     public CartDto getCart(@RequestHeader(required = false) String username, @PathVariable String uuid) {
-        return cartConverter.entityToDto(cartService.getCurrentCart(getCurrentCartUuid(username, uuid)));
+        return cartConverter.modelToDto(cartService.getCurrentCart(getCurrentCartUuid(username, uuid)));
     }
 
     @GetMapping("/generate")
@@ -28,10 +25,9 @@ public class CartsController {
         return new StringResponse(cartService.generateCartUuid());
     }
 
-    @PostMapping("/{uuid}/add/")
-    public void add(@RequestHeader(required = false) String username, @PathVariable String uuid, @RequestBody ProductDto productDto) {
-        cartService.addToCart(getCurrentCartUuid(username, uuid), productDto);
-
+    @GetMapping("/{uuid}/add/{productId}")
+    public void add(@RequestHeader(required = false) String username, @PathVariable String uuid, @PathVariable Long productId) {
+        cartService.addToCart(getCurrentCartUuid(username, uuid), productId);
     }
 
     @GetMapping("/{uuid}/decrement/{productId}")
@@ -50,7 +46,7 @@ public class CartsController {
     }
 
     @GetMapping("/{uuid}/merge")
-    public void merge(@RequestHeader String username, @PathVariable String uuid) {
+    public void merge(@RequestHeader(required = false) String username, @PathVariable String uuid) {
         cartService.merge(
                 getCurrentCartUuid(username, null),
                 getCurrentCartUuid(null, uuid)

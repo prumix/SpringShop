@@ -1,10 +1,9 @@
 package com.prumi.web.core.services;
 
 
-import com.prumi.web.api.dto.CartAndOrderDetails;
-import com.prumi.web.api.dto.CartDto;
+import com.prumi.web.api.carts.CartDto;
+import com.prumi.web.api.core.OrderDetailsDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
-import com.prumi.web.api.dto.OrderDetailsDto;
 import com.prumi.web.core.entities.Order;
 import com.prumi.web.core.entities.OrderItem;
 import com.prumi.web.core.repositories.OrdersRepository;
