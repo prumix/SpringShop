@@ -1,4 +1,31 @@
-<div>
+<div class="col-sm-6 col-md-10">
     <p></p>
-    <h1>WEB MARKET</h1>
+    <h3>Cart statistic</h3>
+    <table class="table table-hover">
+        <tr>
+            <td>Название товара</td>
+            <td>Количество</td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="c in statCart.statisticItemDtos">
+            <td>{{c.title}}</td>
+            <td>{{c.quantity}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p></p>
+    <h3>Order statistic</h3>
+    <table class="table table-hover">
+        <tr>
+            <td>Название товара</td>
+            <td>Количество</td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="order in statOrder.statisticItemDtos">
+            <td>{{order.title}}</td>
+            <td>{{order.quantity}}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>

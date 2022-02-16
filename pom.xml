@@ -11,6 +11,7 @@
         <module>front-service</module>
         <module>gateway</module>
         <module>cart-service</module>
+        <module>statistic-service</module>
 
     </modules>
 

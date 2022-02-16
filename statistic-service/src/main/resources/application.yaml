@@ -1,0 +1,15 @@
+server:
+  port: 8182
+  servlet:
+    context-path: /web-market-stat
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
+
+integrations:
+  cart-service:
+    url: http://localhost:5555/cart
+  core-service:
+    url: http://localhost:5555/core
