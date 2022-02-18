@@ -1,23 +1,32 @@
 package com.rumi.web.cart.service;
 
 
+import com.prumi.web.api.carts.CartDto;
+import com.prumi.web.api.carts.CartItemDto;
 import com.prumi.web.api.core.ProductDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
+import com.rumi.web.cart.converters.CartConverter;
 import com.rumi.web.cart.integrations.ProductsServiceIntegration;
 import com.rumi.web.cart.models.Cart;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CartService {
     private final ProductsServiceIntegration productsServiceIntegration;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final List<CartItemDto> cartItemDtoList = new CopyOnWriteArrayList<>();
 
     @Value("${utils.cart.prefix}")
     private String cartPrefix;
@@ -37,12 +46,37 @@ public class CartService {
         return (Cart) redisTemplate.opsForValue().get(cartKey);
     }
 
+    public List<CartItemDto> getAllCartItems() {
+
+        return cartItemDtoList;
+    }
+
+    public void clearCartItemDtoList() {
+        cartItemDtoList.clear();
+    }
+
     public void addToCart(String cartKey, Long productId) {
         ProductDto productDto = productsServiceIntegration.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Невозможно добавить продукт в корзину. Продукт не найдет, id: " + productId));
         execute(cartKey, c -> {
             c.add(productDto);
         });
+
+        CartItemDto cartItemDto = new CartItemDto(0L, productDto.getTitle(), 1, 0, 0);
+        if (cartItemDtoList.size() ==0){
+            cartItemDtoList.add(cartItemDto);
+        }
+        else {
+            for (Iterator<CartItemDto> iterator = cartItemDtoList.listIterator(); iterator.hasNext();) {
+                if (cartItemDto.getProductTitle().equals(iterator.next().getProductTitle())) {
+                    iterator.next().setQuantity(iterator.next().getQuantity() + 1);
+
+                } else {
+                    cartItemDtoList.add(cartItemDto);
+                }
+            }
+        }
     }
+
 
     public void clearCart(String cartKey) {
         execute(cartKey, Cart::clear);

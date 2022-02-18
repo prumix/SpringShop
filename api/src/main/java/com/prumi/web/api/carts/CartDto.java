@@ -29,4 +29,12 @@ public class CartDto {
         this.items = items;
         this.totalPrice = totalPrice;
     }
+
+    @Override
+    public String toString() {
+        return "CartDto{" +
+                "items=" + items +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
 }

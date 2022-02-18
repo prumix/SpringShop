@@ -1,11 +1,15 @@
 package com.rumi.web.cart.controller;
 
 import com.prumi.web.api.carts.CartDto;
+import com.prumi.web.api.carts.CartItemDto;
 import com.prumi.web.api.dto.StringResponse;
 import com.rumi.web.cart.converters.CartConverter;
 import com.rumi.web.cart.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -24,6 +28,18 @@ public class CartsController {
     public StringResponse getCart() {
         return new StringResponse(cartService.generateCartUuid());
     }
+
+    @GetMapping("/statCart")
+    public List<CartItemDto> getCartStatistic() {
+        return cartService.getAllCartItems();
+    }
+    @GetMapping("/statCart/clear")
+    public boolean clearCartItemDtoList(){
+        System.out.println(true);
+        cartService.clearCartItemDtoList();
+        return true;
+    }
+
 
     @GetMapping("/{uuid}/add/{productId}")
     public void add(@RequestHeader(required = false) String username, @PathVariable String uuid, @PathVariable Long productId) {

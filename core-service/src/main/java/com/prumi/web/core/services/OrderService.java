@@ -3,16 +3,22 @@ package com.prumi.web.core.services;
 
 import com.prumi.web.api.carts.CartDto;
 import com.prumi.web.api.core.OrderDetailsDto;
+import com.prumi.web.api.core.OrderDto;
+import com.prumi.web.api.core.OrderItemDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
 import com.prumi.web.core.entities.Order;
 import com.prumi.web.core.entities.OrderItem;
+import com.prumi.web.core.integrations.CartServiceIntegration;
 import com.prumi.web.core.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,17 +26,18 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrdersRepository ordersRepository;
     private final ProductsService productsService;
-    private RestTemplate restTemplate = new RestTemplate();
+    private final CartServiceIntegration cartServiceIntegration;
+    private List<OrderItemDto> orderItemDtos = new CopyOnWriteArrayList<>();
 
     @Transactional
     public void createOrder(String username, OrderDetailsDto orderDetailsDto) {
-        CartDto cartDto = restTemplate.getForObject("http://localhost:5555/cart/api/v1/cart/{uuid}",CartDto.class,username);
+        CartDto currentCart = cartServiceIntegration.getUserCart(username);
         Order order = new Order();
         order.setAddress(orderDetailsDto.getAddress());
         order.setPhone(orderDetailsDto.getPhone());
         order.setUsername(username);
-        order.setTotalPrice(cartDto.getTotalPrice());
-        List<OrderItem> items = cartDto.getItems().stream()
+        order.setTotalPrice(currentCart.getTotalPrice());
+        List<OrderItem> items = currentCart.getItems().stream()
                 .map(o -> {
                     OrderItem item = new OrderItem();
                     item.setOrder(order);
@@ -42,9 +49,26 @@ public class OrderService {
                 }).collect(Collectors.toList());
         order.setItems(items);
         ordersRepository.save(order);
+
+        orderItemDtos = currentCart.getItems().stream()
+                .map(o -> {
+                    OrderItemDto orderItemDto = new OrderItemDto();
+                    orderItemDto.setProductTitle(o.getProductTitle());
+                    orderItemDto.setQuantity(o.getQuantity());
+                    return orderItemDto;
+                }).collect(Collectors.toList());
     }
 
     public List<Order> findOrdersByUsername(String username) {
         return ordersRepository.findAllByUsername(username);
+    }
+
+
+    public List<OrderItemDto> getAllOrderItems() {
+        return orderItemDtos;
+    }
+
+    public void clearOrderItemDto(){
+        orderItemDtos.clear();
     }
 }

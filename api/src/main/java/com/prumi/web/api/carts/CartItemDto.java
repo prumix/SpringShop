@@ -57,4 +57,15 @@ public class CartItemDto {
         this.pricePerProduct = pricePerProduct;
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "CartItemDto{" +
+                "productId=" + productId +
+                ", productTitle='" + productTitle + '\'' +
+                ", quantity=" + quantity +
+                ", pricePerProduct=" + pricePerProduct +
+                ", price=" + price +
+                '}';
+    }
 }
