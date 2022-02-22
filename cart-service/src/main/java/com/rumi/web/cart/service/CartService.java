@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
@@ -61,7 +62,7 @@ public class CartService {
             c.add(productDto);
         });
 
-        CartItemDto cartItemDto = new CartItemDto(0L, productDto.getTitle(), 1, 0, 0);
+        CartItemDto cartItemDto = new CartItemDto(0L, productDto.getTitle(), 1, BigDecimal.ZERO, BigDecimal.ZERO);
         if (cartItemDtoList.size() ==0){
             cartItemDtoList.add(cartItemDto);
         }

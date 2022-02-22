@@ -5,6 +5,12 @@ import com.prumi.web.api.carts.CartItemDto;
 import com.prumi.web.api.dto.StringResponse;
 import com.rumi.web.cart.converters.CartConverter;
 import com.rumi.web.cart.service.CartService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +21,23 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
+@Tag(name = "Корзина", description = "Методы работы с корзиной")
 public class CartsController {
     private final CartService cartService;
     private final CartConverter cartConverter;
 
     @GetMapping("/{uuid}")
-    public CartDto getCart(@RequestHeader(required = false) String username, @PathVariable String uuid) {
+    @Operation(
+            summary = "Запрос на получение корзины по uuid",
+            responses = {
+                    @ApiResponse(
+                            description = "Успешный ответ", responseCode = "200",
+                            content = @Content(schema = @Schema(implementation = CartDto.class))
+                    )
+            }
+    )
+    public CartDto getCart(@RequestHeader(required = false) String username,
+                           @PathVariable@Parameter(description = "Идентификатор корзины", required = true) String uuid) {
         return cartConverter.modelToDto(cartService.getCurrentCart(getCurrentCartUuid(username, uuid)));
     }
 
@@ -33,6 +50,7 @@ public class CartsController {
     public List<CartItemDto> getCartStatistic() {
         return cartService.getAllCartItems();
     }
+
     @GetMapping("/statCart/clear")
     public boolean clearCartItemDtoList(){
         System.out.println(true);
