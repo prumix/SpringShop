@@ -6,8 +6,10 @@ import com.prumi.web.api.core.OrderDetailsDto;
 import com.prumi.web.api.core.OrderDto;
 import com.prumi.web.api.core.OrderItemDto;
 import com.prumi.web.api.exceptions.ResourceNotFoundException;
+import com.prumi.web.core.converters.AddressConverter;
 import com.prumi.web.core.entities.Order;
 import com.prumi.web.core.entities.OrderItem;
+import com.prumi.web.core.entities.StatusOrder;
 import com.prumi.web.core.integrations.CartServiceIntegration;
 import com.prumi.web.core.repositories.OrdersRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -27,13 +30,14 @@ public class OrderService {
     private final OrdersRepository ordersRepository;
     private final ProductsService productsService;
     private final CartServiceIntegration cartServiceIntegration;
+    private final AddressConverter addressConverter;
     private List<OrderItemDto> orderItemDtos = new CopyOnWriteArrayList<>();
 
     @Transactional
     public void createOrder(String username, OrderDetailsDto orderDetailsDto) {
         CartDto currentCart = cartServiceIntegration.getUserCart(username);
         Order order = new Order();
-        order.setAddress(orderDetailsDto.getAddress());
+        order.setAddress(addressConverter.dtoToString(orderDetailsDto));
         order.setPhone(orderDetailsDto.getPhone());
         order.setUsername(username);
         order.setTotalPrice(currentCart.getTotalPrice());
@@ -48,6 +52,7 @@ public class OrderService {
                     return item;
                 }).collect(Collectors.toList());
         order.setItems(items);
+        order.setStatusOrder(StatusOrder.CREATED);
         ordersRepository.save(order);
 
         orderItemDtos = currentCart.getItems().stream()
@@ -70,5 +75,9 @@ public class OrderService {
 
     public void clearOrderItemDto(){
         orderItemDtos.clear();
+    }
+
+    public Optional<Order> findById(Long id) {
+        return ordersRepository.findById(id);
     }
 }

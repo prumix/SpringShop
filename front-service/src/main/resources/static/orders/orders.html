@@ -10,10 +10,13 @@
             <td>Стоимость</td>
         </tr>
         <tbody>
-        <tr ng-repeat="order in MyOrders">
-            <td>{{order.id}}</td>
-            <td>{{order.address}}</td>
-            <td>{{order.totalPrice}}</td>
+        <tr ng-repeat="orders in MyOrders">
+            <td>{{orders.id}}</td>
+            <td>{{orders.addressToFront}}</td>
+            <td>{{orders.totalPrice}}</td>
+            <td>
+                <button class="btn btn-primary" ng-click="goToPay(orders.id)">Оплатить</button>
+            </td>
         </tr>
         </tbody>
     </table>
