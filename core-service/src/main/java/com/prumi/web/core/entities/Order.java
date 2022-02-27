@@ -37,6 +37,10 @@ public class Order {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "status_order")
+    @Enumerated(EnumType.STRING)
+    private StatusOrder statusOrder;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
